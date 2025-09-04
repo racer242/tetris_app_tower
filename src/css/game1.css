@@ -1,0 +1,259 @@
+.g1 .game-container {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  transition: opacity 1000ms;
+}
+
+.g1 .game-area {
+  position: absolute;
+  display: block;
+  transition: opacity 1000ms;
+  left: 221px;
+  top: 150px;
+  width: 140px;
+  height: 280px;
+}
+
+.g1 .game-area-bg {
+  position: absolute;
+  display: block;
+  background-color: rgba(0, 0, 0, 0.7);
+  left: 221px;
+  top: 150px;
+  width: 140px;
+  height: 280px;
+}
+.g1 .game-area-columns {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  transition: opacity 1000ms;
+}
+.g1 .game-area-column {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  width: 14px;
+  height: 280px;
+  background-color: rgba(113, 200, 239, 0.1);
+}
+
+.g1 .clear-area {
+  position: absolute;
+  display: block;
+  left: 221px;
+  top: 150px;
+}
+.g1 .clear-line {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  width: 140px;
+  height: 14px;
+}
+
+.g1 .clear-line-bg {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 7px;
+  width: 140px;
+  height: 14px;
+  background-image: url(../images/game1/row-glow.png);
+  background-size: 100% 100%;
+}
+
+.g1 .clear-line-glow {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  width: 140px;
+  height: 14px;
+  background-color: #fff;
+}
+
+.g1 .top-area {
+  position: absolute;
+  display: block;
+  left: 221px;
+  top: 26px;
+  opacity: 0;
+  transition: opacity 1000ms;
+}
+
+.g1 .countdown-area {
+  position: absolute;
+  display: block;
+  left: 8px;
+  top: 4px;
+  width: 140px;
+  height: 28px;
+  color: #bff8ff;
+}
+
+.g1 .next-title-area {
+  position: absolute;
+  display: block;
+  left: 49px;
+  top: 89px;
+  width: 20px;
+  height: 10px;
+  color: #00caf1;
+}
+
+.g1 .next-area {
+  position: absolute;
+  display: block;
+  left: 79px;
+  top: 74px;
+  width: 66px;
+  height: 38px;
+}
+
+.g1 .score-area {
+  position: absolute;
+  display: block;
+  color: #bff8ff;
+  left: 0px;
+  top: 89px;
+  width: 70px;
+  height: 18px;
+}
+
+.g1 .pause-plate {
+  position: absolute;
+  display: block;
+  left: 207px;
+  top: 160px;
+  width: 168px;
+  height: 100px;
+  background-color: #fff;
+  border-radius: 8px;
+  color: #00caf1;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+
+  box-shadow: 0px 0px 58px 7px #01caf1;
+}
+
+.g1 .finish-area {
+  position: absolute;
+  display: block;
+  left: 204px;
+  top: 136px;
+  width: 180px;
+  height: 180px;
+
+  background-color: #fff;
+  border-radius: 8px;
+  color: #00caf1;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  opacity: 0;
+  transition: opacity 1000ms;
+}
+
+.g1 .start-countdown-area {
+  position: absolute;
+  display: block;
+  left: 207px;
+  top: 230px;
+  width: 168px;
+  height: 100px;
+
+  color: #00caf1;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+}
+
+.g1 .block0,
+.g1 .block1,
+.g1 .block2,
+.g1 .block3,
+.g1 .block4,
+.g1 .block5,
+.g1 .block6 {
+  /* z-index: 1000; */
+  /* font-size: 10px;
+  line-height: 1em;
+  font-family: arial; */
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  padding: 1px;
+  /* border: 0.5px solid  #ffffff; */
+  /* with	margin 0.5px there were	problems with offsetLeft and offsetTop */
+}
+
+/*
+	  |
+	---
+*/
+.g1 .block0 {
+  background-image: url(../images/game1/b0.png);
+}
+
+/*
+	|
+	---
+*/
+.g1 .block1 {
+  background-image: url(../images/game1/b1.png);
+}
+
+/*
+	--
+   --
+*/
+.g1 .block2 {
+  background-image: url(../images/game1/b2.png);
+}
+
+/*
+	--
+	 --
+*/
+.g1 .block3 {
+  background-image: url(../images/game1/b3.png);
+}
+
+/*
+	|
+   ---
+*/
+.g1 .block4 {
+  background-image: url(../images/game1/b4.png);
+}
+
+/*
+	--
+	--
+*/
+.g1 .block5 {
+  background-image: url(../images/game1/b5.png);
+}
+
+/*
+	----
+*/
+.g1 .block6 {
+  background-image: url(../images/game1/b6.png);
+}
