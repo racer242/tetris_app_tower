@@ -14,7 +14,7 @@ class Tetris {
   ) {
     this.puzzle = null;
     this.area = null;
-    this.unit = 75; // unit = x pixels
+    this.unit = 14; // unit = x pixels
     this.areaX = 10; // area width = x units
     this.areaY = 20; // area height = y units
     this.paused = false;

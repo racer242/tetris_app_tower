@@ -48,10 +48,13 @@ function onAppReadyHandler(app) {
       1: {
         id: "TETRIS",
 
+        // Смещение игрового поля
+        mainAreaOffset: { x: 0, y: 0 },
+
         // Показывать обратный отсчет игры. Таймер задается в миллисекундах
         countdown: {
           show: true,
-          value: 1 * 60 * 1000,
+          value: 10 * 60 * 1000,
         },
 
         // Перезагружать страницу после заданного количества игр
@@ -98,7 +101,7 @@ function onAppReadyHandler(app) {
         animationOnGameScreen: true,
 
         // Задержка до авто-рестарта игры на экране финальных очков
-        restartTimeout: 10000000000, //15000,
+        restartTimeout: 15000,
 
         // Настройки задержек джойстика принцип работы:
         // down:GO -> press*startDelay:(press*stepDelay:GO) -> up:RESET

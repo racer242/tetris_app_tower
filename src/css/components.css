@@ -77,19 +77,21 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-left: 50px;
+  padding-bottom: 35px;
   gap: 30px;
   transition: opacity 2s;
 }
 
 #Preloader.g1 {
-  background: linear-gradient(180deg, #0b0b52 0%, #070739 100%);
+  background: linear-gradient(180deg, #010619 0%, #032852 100%);
 }
 
 .preloader-display {
   position: absolute;
   display: block;
-  width: 100px;
-  height: 100px;
+  width: 20px;
+  height: 20px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -97,8 +99,8 @@
 }
 
 .preloader-display.g1 {
-  border: #862dfa 17px solid;
-  border-left-color: #01caf1;
+  border: #013f65 3px solid;
+  border-left-color: #2afcff;
 }
 
 .preload-spin {

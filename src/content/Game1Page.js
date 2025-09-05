@@ -382,9 +382,15 @@ class Game1Page extends GamePage {
   }
 
   render() {
-    // this.state.stats.score = 9999999;
+    // this.state.stats.score = 999;
     return (
-      <div className="gamePage g1">
+      <div
+        className="gamePage g1"
+        style={{
+          left: this.state.gameData?.mainAreaOffset?.x ?? 0,
+          top: this.state.gameData?.mainAreaOffset?.y ?? 0,
+        }}
+      >
         <div className="gameScene">
           <div
             className="game-container"

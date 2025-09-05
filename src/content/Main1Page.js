@@ -80,7 +80,13 @@ class Main1Page extends Component {
     let children = [];
     children.push(this.props.children);
     return (
-      <div className="mainPage g1">
+      <div
+        className="mainPage g1"
+        style={{
+          left: this.state.gameData?.mainAreaOffset?.x ?? 0,
+          top: this.state.gameData?.mainAreaOffset?.y ?? 0,
+        }}
+      >
         {this.state.gameData?.videoIntro?.show && (
           <video
             autoPlay
