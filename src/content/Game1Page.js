@@ -48,7 +48,10 @@ class Game1Page extends GamePage {
       ...this.state,
       stats: this.stats,
     };
+
     this.gameAreaRef = React.createRef();
+    this.clone1AreaRef = React.createRef();
+    this.clone2AreaRef = React.createRef();
 
     this.nextPuzzle_updateHandler = this.nextPuzzle_updateHandler.bind(this);
     this.placeHandler = this.placeHandler.bind(this);
@@ -70,11 +73,32 @@ class Game1Page extends GamePage {
     clearTimeout(this.startHideTimeout);
     clearTimeout(this.startCountdownTimeout);
     clearTimeout(this.countdownTimeout);
+    clearTimeout(this.cloningTimeout);
     this.tetris.reset();
   }
 
   updateState() {
     this.setState({ ...this.state, stats: this.stats });
+  }
+
+  doCloning() {
+    const sourceElement = this.gameAreaRef.current;
+    if (!sourceElement) return;
+    const dest1Element = this.clone1AreaRef.current;
+    const dest2Element = this.clone2AreaRef.current;
+    dest1Element.innerHTML = sourceElement.innerHTML;
+    dest2Element.innerHTML = sourceElement.innerHTML;
+  }
+
+  startCloning() {
+    this.cloningTimeout = setTimeout(() => {
+      this.doCloning();
+      this.startCloning();
+    }, this.state.gameData?.cloneUpdateInterval ?? 100);
+  }
+
+  stopCloning() {
+    clearTimeout(this.cloningTimeout);
   }
 
   startCountdown() {
@@ -198,6 +222,7 @@ class Game1Page extends GamePage {
         if (this.stats.isStarting || this.stats.isPaused) return;
         this.soundControl.globalStop();
         this.stopCountdown();
+        this.stopCloning();
         if (this.stats.gameOver) {
           this.store.dispatch(
             setStoreData({
@@ -314,6 +339,7 @@ class Game1Page extends GamePage {
         this.updateCountdown();
         this.updateState();
         this.startCountdown();
+        this.startCloning();
       }, 3000);
     }, 100);
   }
@@ -357,6 +383,7 @@ class Game1Page extends GamePage {
 
     if (gameOver) {
       this.stopCountdown();
+      this.stopCloning();
 
       this.soundControl.globalStop();
       this.soundControl.play("gameover");
@@ -384,164 +411,492 @@ class Game1Page extends GamePage {
   render() {
     // this.state.stats.score = 999;
     return (
-      <div
-        className="gamePage g1"
-        style={{
-          left: this.state.gameData?.mainAreaOffset?.x ?? 0,
-          top: this.state.gameData?.mainAreaOffset?.y ?? 0,
-        }}
-      >
-        <div className="gameScene">
-          <div
-            className="game-container"
-            style={{ opacity: this.state.stats.gameOver ? 0 : 1 }}
-          >
-            <div className="frame"></div>
-            <div className="game-area-bg">
+      <div className="gamePage g1">
+        <div
+          className="pageOffset"
+          style={{
+            left: this.state.gameData?.mainAreaOffset?.x ?? 0,
+            top: this.state.gameData?.mainAreaOffset?.y ?? 0,
+          }}
+        >
+          <div className="gameScene">
+            <div
+              className="game-container"
+              style={{ opacity: this.state.stats.gameOver ? 0 : 1 }}
+            >
+              <div className="frame"></div>
+              <div className="game-area-bg">
+                <div
+                  className="game-area-columns"
+                  style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+                >
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 0, animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 2, animationDelay: "1000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 4, animationDelay: "2000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 6, animationDelay: "3000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 8, animationDelay: "4000ms" }}
+                  ></div>
+                </div>
+              </div>
               <div
-                className="game-area-columns"
+                className="game-area"
+                ref={this.gameAreaRef}
+                style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+              ></div>
+
+              <div className="clear-area">
+                {this.state.stats.collapses.reduce((a, v, i) => {
+                  if (v)
+                    a.push(
+                      <div
+                        key={`clear${i}`}
+                        className="clear-line"
+                        style={{ top: i * 14 }}
+                      >
+                        <div className="clear-line-bg explode"></div>
+                        <div className="clear-line-glow collapse"></div>
+                      </div>
+                    );
+                  return a;
+                }, [])}
+              </div>
+
+              <div
+                className="top-area"
                 style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
               >
-                <div
-                  className="game-area-column lights"
-                  style={{ left: 14 * 0, animationDelay: "0ms" }}
-                ></div>
-                <div
-                  className="game-area-column lights"
-                  style={{ left: 14 * 2, animationDelay: "1000ms" }}
-                ></div>
-                <div
-                  className="game-area-column lights"
-                  style={{ left: 14 * 4, animationDelay: "2000ms" }}
-                ></div>
-                <div
-                  className="game-area-column lights"
-                  style={{ left: 14 * 6, animationDelay: "3000ms" }}
-                ></div>
-                <div
-                  className="game-area-column lights"
-                  style={{ left: 14 * 8, animationDelay: "4000ms" }}
-                ></div>
-              </div>
-            </div>
-            <div
-              className="game-area"
-              ref={this.gameAreaRef}
-              style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
-            ></div>
-
-            <div className="clear-area">
-              {this.state.stats.collapses.reduce((a, v, i) => {
-                if (v)
-                  a.push(
-                    <div
-                      key={`clear${i}`}
-                      className="clear-line"
-                      style={{ top: i * 14 }}
-                    >
-                      <div className="clear-line-bg explode"></div>
-                      <div className="clear-line-glow collapse"></div>
-                    </div>
-                  );
-                return a;
-              }, [])}
-            </div>
-
-            <div
-              className="top-area"
-              style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
-            >
-              <div className="score-area">
-                <h3
-                  className={
-                    !this.state.gameData?.countdown?.show ? "small" : ""
-                  }
-                >
-                  {/* {9000000} */}
-                  {this.state.stats.score}
-                </h3>
-              </div>
-
-              {this.state.gameData?.countdown?.show && (
-                <div className="countdown-area">
-                  <h3>{`${this.state.stats.cdwnMin}:${this.state.stats.cdwnSec}`}</h3>
+                <div className="score-area">
+                  <h3
+                    className={
+                      !this.state.gameData?.countdown?.show ? "small" : ""
+                    }
+                  >
+                    {/* {9000000} */}
+                    {this.state.stats.score}
+                  </h3>
                 </div>
-              )}
 
-              {this.state.stats.nextPuzzleType >= 0 && (
-                <>
-                  {!this.state.gameData?.countdown?.show && (
-                    <div className="next-title-area">
-                      <p>ДАЛЬШЕ:</p>
-                    </div>
-                  )}
-                  <div
-                    className="next-area"
-                    style={{
-                      backgroundImage: `url(${
-                        this.state.game1.puzzleSources[
-                          this.state.stats.nextPuzzleType
-                        ]
-                      })`,
-                    }}
-                  ></div>
-                </>
-              )}
+                {this.state.gameData?.countdown?.show && (
+                  <div className="countdown-area">
+                    <h3>{`${this.state.stats.cdwnMin}:${this.state.stats.cdwnSec}`}</h3>
+                  </div>
+                )}
+
+                {this.state.stats.nextPuzzleType >= 0 && (
+                  <>
+                    {!this.state.gameData?.countdown?.show && (
+                      <div className="next-title-area">
+                        <p>ДАЛЬШЕ:</p>
+                      </div>
+                    )}
+                    <div
+                      className="next-area"
+                      style={{
+                        backgroundImage: `url(${
+                          this.state.game1.puzzleSources[
+                            this.state.stats.nextPuzzleType
+                          ]
+                        })`,
+                      }}
+                    ></div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {this.state.stats.isPaused && (
+              <div className="pause-plate">
+                <h1>Пауза</h1>
+              </div>
+            )}
+
+            <div
+              className="finish-area"
+              style={{ opacity: this.state.stats.gameOver ? 1 : 0 }}
+            >
+              <h2>ИТОГОВЫЙ СЧЕТ:</h2>
+              <div
+                className="final-score"
+                style={{
+                  fontSize:
+                    this.state.stats.score < 1000
+                      ? 64
+                      : this.state.stats.score < 10000
+                      ? 56
+                      : this.state.stats.score < 100000
+                      ? 48
+                      : this.state.stats.score < 1000000
+                      ? 40
+                      : 32,
+                }}
+              >
+                {this.state.stats.score}
+              </div>
             </div>
           </div>
-
-          {this.state.stats.isPaused && (
-            <div className="pause-plate">
-              <h1>Пауза</h1>
-            </div>
+          {this.state.stats.isStarting && (
+            <>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "0ms" }}
+              >
+                <div className="start-countdown">3...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "1000ms" }}
+              >
+                <div className="start-countdown">2...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "2000ms" }}
+              >
+                <div className="start-countdown">1...</div>
+              </div>
+            </>
           )}
+        </div>
 
-          <div
-            className="finish-area"
-            style={{ opacity: this.state.stats.gameOver ? 1 : 0 }}
-          >
-            <h2>ИТОГОВЫЙ СЧЕТ:</h2>
+        {/* Правый клон */}
+
+        <div
+          className="pageOffset"
+          style={{
+            left: this.state.gameData?.rightAreaOffset?.x ?? 0,
+            top: this.state.gameData?.rightAreaOffset?.y ?? 0,
+          }}
+        >
+          <div className="gameScene">
             <div
-              className="final-score"
-              style={{
-                fontSize:
-                  this.state.stats.score < 1000
-                    ? 64
-                    : this.state.stats.score < 10000
-                    ? 56
-                    : this.state.stats.score < 100000
-                    ? 48
-                    : this.state.stats.score < 1000000
-                    ? 40
-                    : 32,
-              }}
+              className="game-container"
+              style={{ opacity: this.state.stats.gameOver ? 0 : 1 }}
             >
-              {this.state.stats.score}
+              <div className="frame"></div>
+              <div className="game-area-bg">
+                <div
+                  className="game-area-columns"
+                  style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+                >
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 0, animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 2, animationDelay: "1000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 4, animationDelay: "2000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 6, animationDelay: "3000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 8, animationDelay: "4000ms" }}
+                  ></div>
+                </div>
+              </div>
+              <div
+                className="game-area"
+                ref={this.clone1AreaRef}
+                style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+              ></div>
+
+              <div className="clear-area">
+                {this.state.stats.collapses.reduce((a, v, i) => {
+                  if (v)
+                    a.push(
+                      <div
+                        key={`clear${i}`}
+                        className="clear-line"
+                        style={{ top: i * 14 }}
+                      >
+                        <div className="clear-line-bg explode"></div>
+                        <div className="clear-line-glow collapse"></div>
+                      </div>
+                    );
+                  return a;
+                }, [])}
+              </div>
+
+              <div
+                className="top-area"
+                style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+              >
+                <div className="score-area">
+                  <h3
+                    className={
+                      (!this.state.gameData?.countdown?.show ? "small " : "") +
+                      "med-glow"
+                    }
+                  >
+                    {/* {9000000} */}
+                    {this.state.stats.score}
+                  </h3>
+                </div>
+
+                {this.state.gameData?.countdown?.show && (
+                  <div className="countdown-area">
+                    <h3 className="large-glow">{`${this.state.stats.cdwnMin}:${this.state.stats.cdwnSec}`}</h3>
+                  </div>
+                )}
+
+                {this.state.stats.nextPuzzleType >= 0 && (
+                  <>
+                    {!this.state.gameData?.countdown?.show && (
+                      <div className="next-title-area">
+                        <p>ДАЛЬШЕ:</p>
+                      </div>
+                    )}
+                    <div
+                      className="next-area small-glow"
+                      style={{
+                        backgroundImage: `url(${
+                          this.state.game1.puzzleSources[
+                            this.state.stats.nextPuzzleType
+                          ]
+                        })`,
+                      }}
+                    ></div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {this.state.stats.isPaused && (
+              <div className="pause-plate">
+                <h1>Пауза</h1>
+              </div>
+            )}
+
+            <div
+              className="finish-area"
+              style={{ opacity: this.state.stats.gameOver ? 1 : 0 }}
+            >
+              <h2>ИТОГОВЫЙ СЧЕТ:</h2>
+              <div
+                className="final-score"
+                style={{
+                  fontSize:
+                    this.state.stats.score < 1000
+                      ? 64
+                      : this.state.stats.score < 10000
+                      ? 56
+                      : this.state.stats.score < 100000
+                      ? 48
+                      : this.state.stats.score < 1000000
+                      ? 40
+                      : 32,
+                }}
+              >
+                {this.state.stats.score}
+              </div>
             </div>
           </div>
+          {this.state.stats.isStarting && (
+            <>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "0ms" }}
+              >
+                <div className="start-countdown">3...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "1000ms" }}
+              >
+                <div className="start-countdown">2...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "2000ms" }}
+              >
+                <div className="start-countdown">1...</div>
+              </div>
+            </>
+          )}
         </div>
-        {this.state.stats.isStarting && (
-          <>
+
+        {/* Левый клон */}
+
+        <div
+          className="pageOffset"
+          style={{
+            left: this.state.gameData?.leftAreaOffset?.x ?? 0,
+            top: this.state.gameData?.leftAreaOffset?.y ?? 0,
+          }}
+        >
+          <div className="gameScene">
             <div
-              className="start-countdown-area appear-countdown-1"
-              style={{ animationDelay: "0ms" }}
+              className="game-container"
+              style={{ opacity: this.state.stats.gameOver ? 0 : 1 }}
             >
-              <div className="start-countdown">3...</div>
+              <div className="frame"></div>
+              <div className="game-area-bg">
+                <div
+                  className="game-area-columns"
+                  style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+                >
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 0, animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 2, animationDelay: "1000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 4, animationDelay: "2000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 6, animationDelay: "3000ms" }}
+                  ></div>
+                  <div
+                    className="game-area-column lights"
+                    style={{ left: 14 * 8, animationDelay: "4000ms" }}
+                  ></div>
+                </div>
+              </div>
+              <div
+                className="game-area"
+                ref={this.clone2AreaRef}
+                style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+              ></div>
+
+              <div className="clear-area">
+                {this.state.stats.collapses.reduce((a, v, i) => {
+                  if (v)
+                    a.push(
+                      <div
+                        key={`clear${i}`}
+                        className="clear-line"
+                        style={{ top: i * 14 }}
+                      >
+                        <div className="clear-line-bg explode"></div>
+                        <div className="clear-line-glow collapse"></div>
+                      </div>
+                    );
+                  return a;
+                }, [])}
+              </div>
+
+              <div
+                className="top-area"
+                style={{ opacity: this.state.stats.isStarting ? 0 : 1 }}
+              >
+                <div className="score-area">
+                  <h3
+                    className={
+                      (!this.state.gameData?.countdown?.show ? "small " : "") +
+                      "med-glow"
+                    }
+                  >
+                    {/* {9000000} */}
+                    {this.state.stats.score}
+                  </h3>
+                </div>
+
+                {this.state.gameData?.countdown?.show && (
+                  <div className="countdown-area">
+                    <h3 className="large-glow">{`${this.state.stats.cdwnMin}:${this.state.stats.cdwnSec}`}</h3>
+                  </div>
+                )}
+
+                {this.state.stats.nextPuzzleType >= 0 && (
+                  <>
+                    {!this.state.gameData?.countdown?.show && (
+                      <div className="next-title-area">
+                        <p>ДАЛЬШЕ:</p>
+                      </div>
+                    )}
+                    <div
+                      className="next-area small-glow"
+                      style={{
+                        backgroundImage: `url(${
+                          this.state.game1.puzzleSources[
+                            this.state.stats.nextPuzzleType
+                          ]
+                        })`,
+                      }}
+                    ></div>
+                  </>
+                )}
+              </div>
             </div>
+
+            {this.state.stats.isPaused && (
+              <div className="pause-plate">
+                <h1>Пауза</h1>
+              </div>
+            )}
+
             <div
-              className="start-countdown-area appear-countdown-1"
-              style={{ animationDelay: "1000ms" }}
+              className="finish-area"
+              style={{ opacity: this.state.stats.gameOver ? 1 : 0 }}
             >
-              <div className="start-countdown">2...</div>
+              <h2>ИТОГОВЫЙ СЧЕТ:</h2>
+              <div
+                className="final-score"
+                style={{
+                  fontSize:
+                    this.state.stats.score < 1000
+                      ? 64
+                      : this.state.stats.score < 10000
+                      ? 56
+                      : this.state.stats.score < 100000
+                      ? 48
+                      : this.state.stats.score < 1000000
+                      ? 40
+                      : 32,
+                }}
+              >
+                {this.state.stats.score}
+              </div>
             </div>
-            <div
-              className="start-countdown-area appear-countdown-1"
-              style={{ animationDelay: "2000ms" }}
-            >
-              <div className="start-countdown">1...</div>
-            </div>
-          </>
-        )}
+          </div>
+          {this.state.stats.isStarting && (
+            <>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "0ms" }}
+              >
+                <div className="start-countdown">3...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "1000ms" }}
+              >
+                <div className="start-countdown">2...</div>
+              </div>
+              <div
+                className="start-countdown-area appear-countdown-1"
+                style={{ animationDelay: "2000ms" }}
+              >
+                <div className="start-countdown">1...</div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     );
   }

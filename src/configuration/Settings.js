@@ -1,5 +1,9 @@
 import { isMobile, isLocal } from "../core/helpers";
 
+const urlParams = new URLSearchParams(window.location.search);
+const showPreloader = urlParams.get("preloader");
+const isAdaptive = urlParams.get("adaptive");
+
 const settings = {
   assetsUrl: ".",
   localStoreName: "appState_020825",
@@ -20,6 +24,9 @@ const settings = {
   switchToMobileWidth: 720,
   currentPage: "main",
   particlesCount: 30,
+
+  showPreloader: showPreloader ? showPreloader == "1" : false,
+  isAdaptive: isAdaptive ? isAdaptive == "1" : false,
 };
 
 export default settings;

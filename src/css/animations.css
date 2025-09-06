@@ -74,11 +74,11 @@
   }
   50% {
     opacity: 0;
-    transform: translateY(38px) scaleY(0);
+    transform: translateY(7px) scaleY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(38px) scaleY(0);
+    transform: translateY(7px) scaleY(0);
   }
 }
 

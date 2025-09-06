@@ -9,16 +9,12 @@ class Preloader extends Component {
     this.preloader_completeHandler = this.preloader_completeHandler.bind(this);
     this.preloader_errorHandler = this.preloader_errorHandler.bind(this);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const showPreloader = urlParams.get("preloader");
-
     this.store = this.props.store;
     if (this.store) {
       this.state = {
         ...this.store.getState(),
-        showPreloader,
       };
-    } else this.state = { gameIndex: 1, showPreloader };
+    } else this.state = { gameIndex: 1 };
 
     this.images = window.gameIndex ? resources[this.state.gameIndex] : [];
   }

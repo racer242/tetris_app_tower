@@ -81,10 +81,13 @@ class Container extends Component {
       mobileSize = true;
     }
 
-    let pageScale = Math.min(
-      width / pageBounds.width,
-      height / pageBounds.height
-    );
+    let pageScale = 1;
+    if (this.state.isAdaptive) {
+      pageScale = Math.min(
+        width / pageBounds.width,
+        height / pageBounds.height
+      );
+    }
     let pageX = (width - pageBounds.width) / 2 / pageScale;
     let pageY = (height - pageBounds.height) / 2 / pageScale;
 

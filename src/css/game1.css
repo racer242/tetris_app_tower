@@ -1,3 +1,10 @@
+.g1 .pageOffset {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+}
+
 .g1 .game-container {
   position: absolute;
   display: block;
@@ -267,4 +274,26 @@
   /* background-image: url(../images/game1/b6.png); */
   background-color: #4570ff;
   border: 1px solid #173492;
+}
+
+.g1 .large-glow {
+  /* text-shadow: 0 0 10px #000e2c, 0 0 15px #000e2c, 0 0 15px #000e2c,
+    0 0 20px #000e2c, 0 0 25px #000e2c; */
+  filter: drop-shadow(0 0 5px #00091d) drop-shadow(0 0 7px #00091d)
+    drop-shadow(0 0 10px #00091d) drop-shadow(0 12px #00091d)
+    drop-shadow(0 0 15px #00091d);
+}
+
+.g1 .med-glow {
+  filter: drop-shadow(-5px 0 3px #021431) drop-shadow(5px 0 4px #021431)
+    drop-shadow(0 -5px 5px #021431) drop-shadow(0 -5px 6px #021431)
+    drop-shadow(0 0 7px #021431);
+
+  /* text-shadow: 0 0 4px #000e2c, 0 0 5px #000e2c, 0 0 6px #000e2c,
+    0 0 7px #000e2c, 0 0 8px #000e2c; */
+}
+
+.g1 .small-glow {
+  filter: drop-shadow(0 -3px 5px #031c3a) drop-shadow(-3px 0 2px #031c3a)
+    drop-shadow(3px 0 2px #031c3a) drop-shadow(0 0 4px #031c3a);
 }
